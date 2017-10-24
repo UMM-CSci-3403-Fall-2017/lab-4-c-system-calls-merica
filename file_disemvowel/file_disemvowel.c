@@ -66,19 +66,20 @@ void disemvowel(FILE* inputFile, FILE* outputFile) {
      * in a buffer of data, copy the non-vowels to the output buffer, and
      * use fwrite to write that out.
      */
- 
+  //alloating the buff size
 char* in_buf = (char*)calloc(BUF_SIZE, sizeof(char));
 char* out_buf = (char*)calloc(BUF_SIZE+1, sizeof(char));
   int non_vowels =0;
   int number_of_chars = 0;
-  
+  //loop condition reads the number of characters sucessfuly read in a file.
+  //fread() returns 0 where there are no more characters to read.
   while((number_of_chars = fread(in_buf, 1, BUF_SIZE, inputFile)) != 0) {
 
 
     non_vowels=copy_non_vowels(number_of_chars, in_buf, out_buf );
-    
+    //Inserting the null terminator at the end of the string
        out_buf[non_vowels] = '\0';
-     
+       //writing out to the output file.
        fwrite(out_buf, sizeof(char), non_vowels, outputFile);
     
 
