@@ -1,11 +1,13 @@
+#include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <string.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <string.h>
-
 static int num_dirs, num_regular;
 
 bool is_dir(const char* path) {
@@ -16,13 +18,14 @@ bool is_dir(const char* path) {
    * return value from stat in case there is a problem, e.g., maybe the
    * the file doesn't actually exist.
    */
+
   struct stat directory;
   if(stat(path, &directory)==0)
     {
       if(S_ISDIR(directory.st_mode)) {
-	return true;
+    return true;
       } else {
-	return false;
+    return false;
       }
       
     } else {
@@ -30,7 +33,11 @@ bool is_dir(const char* path) {
   }
 }
 
-/* 
+
+      
+
+
+/*
  * I needed this because the multiple recursion means there's no way to
  * order them so that the definitions all precede the cause.
  */
@@ -48,31 +55,45 @@ void process_directory(const char* path) {
    * with a matching call to chdir() to move back out of it when you're
    * done.
    */
-  bool running= true;
+ 
+
+ 
   struct dirent *direct;
   DIR *current_directory;
+
+  current_directory = opendir(path);
   
+  chdir(path);
+  
+  if(!current_directory) {
     
-  while(running){
-    if(opendir(path)!= NULL) {
-      current_directory = opendir(path);
-      chdir(path);
-      direct = readdir(current_directory);
-      if(strstr(direct->d_name, ".") == NULL && strstr(direct->d_name, "..") != NULL) {
-	process_path(direct->d_name);
+    printf("%s\n", "Cannot open the directory");
+    exit(0);
+    
+    
+  }
+
+       //assigning current_directory to the DIR returned by opendir
+     //it returnds null if no dir is returned
+  while((direct = (readdir(current_directory)))!= NULL) {
+
+    //skipping the directories we don't want
+      if((strcmp(direct->d_name, ".") ==0 ) || (strcmp(direct->d_name, "..") == 0)) {
+    continue;
+        
+        
       }
-      direct = readdir (current_directory);
       
-    } else {
-      running = false;
+   process_path(direct->d_name);
+   
+
     }
-     
+  
+ num_dirs++;
+  chdir(".."); 
+  closedir(current_directory);
 
   }
-  chdir("..");
-
-  closedir(current_directory);
-}
 
 void process_file(const char* path) {
   /*
@@ -97,9 +118,10 @@ int main (int argc, char *argv[]) {
     return 1;
   }
 
-  num_dirs = 0;
+   num_dirs = 0;
   num_regular = 0;
 
+ 
   process_path(argv[1]);
 
   printf("There were %d directories.\n", num_dirs);
