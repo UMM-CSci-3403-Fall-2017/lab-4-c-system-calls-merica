@@ -67,8 +67,10 @@ void disemvowel(FILE* inputFile, FILE* outputFile) {
      * use fwrite to write that out.
      */
   //alloating the buff size
-char* in_buf = (char*)calloc(BUF_SIZE, sizeof(char));
-char* out_buf = (char*)calloc(BUF_SIZE+1, sizeof(char));
+  //char* in_buf = (char*)calloc(BUF_SIZE, sizeof(char));
+  //char* out_buf = (char*)calloc(BUF_SIZE+1, sizeof(char));
+  char in_buf[BUF_SIZE];
+char out_buf[BUF_SIZE+1];
   int non_vowels =0;
   int number_of_chars = 0;
   //loop condition reads the number of characters sucessfuly read in a file.
@@ -89,8 +91,8 @@ char* out_buf = (char*)calloc(BUF_SIZE+1, sizeof(char));
  fclose(outputFile);
 fclose(inputFile);
 //freeing memory
- free(in_buf);
- free(out_buf);
+//free(in_buf);
+//free(out_buf);
 
 
 }
