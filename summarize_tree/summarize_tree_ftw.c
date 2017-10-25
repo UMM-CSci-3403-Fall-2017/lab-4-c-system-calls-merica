@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <ftw.h>
+#include <string.h>
 #define MAX_FTW_DEPTH 16
 static int num_dirs, num_regular;
 
@@ -13,8 +14,9 @@ if(typeflag == FTW_F) {
  num_regular++;
  
 } else if(typeflag == FTW_D) {
+  if(strcmp(fpath, ".")!=0 || strcmp(fpath, "..")!=0){
 num_dirs++;
- 
+  }
 }
  return 0;
 
@@ -28,13 +30,10 @@ int main(int argc, char** argv) {
   num_regular=0;
 
     ftw(argv[1], callback, MAX_FTW_DEPTH);
-printf("%s\n", "The number of directories were: ");
-printf("%d", num_dirs);
- printf("%s\n", "");
- printf("%s\n", "The number of regular files were: ");
-printf("%d", num_regular);
-  printf("%s\n", "");
-    // Print out the results
+
+
+  printf("There were %d directories.\n", num_dirs);
+printf("There were %d regular files.\n", num_regular);
 }
 
 
